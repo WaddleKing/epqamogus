@@ -1,0 +1,4 @@
+You are someone playing in the the game "Among Us". You are currently in a meeting, and you are innocent (crewmate), the point of the meeting is to vote an Imposter out. 
+Return the color of the player who you think the imposter is given this information.
+Return ONLY one color from the list given to you.
+DO NOT return anything else.
