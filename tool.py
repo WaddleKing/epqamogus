@@ -1,5 +1,9 @@
 import pyautogui, pyscreeze, keyboard
 from time import sleep
+from PIL import Image
+import easyocr
+import cv2 as cv
+import numpy as np
 
 def click(x, y, duration=0.1):
     pyautogui.click(
@@ -39,6 +43,20 @@ if __name__ == "__main__":
     sleep(1)
     # pyautogui.screenshot('time.png', region=(1816, 1317, 541, 89))
     pyautogui.screenshot("screen.png")
+    # reader = easyocr.Reader(['en'])
+    # result = reader.readtext("manifolds.png")
+    # result = "".join([text for (bbox, text, prob) in result])
+    # print(result)
+    # pyautogui.screenshot('temp.png', region=(636, 63, 1102, 986))
+    # img = np.array(Image.open('temp.png'))
+    # # Set range of color values
+    # lower = np.array([30, 30, 30])
+    # upper = np.array([255, 255, 255])
+    # # Threshold the image to get only selected colors
+    # mask = cv.inRange(img, lower, upper)
+    # # Set the new value to the masked image
+    # img[mask.astype(bool)] = 255
+    # Image.fromarray(img).save("temp.png")
 
     print("started")
     while True:
@@ -50,6 +68,7 @@ if __name__ == "__main__":
                 
                 print(point)
                 #print(im.getpixel((pyautogui.position().x, pyautogui.position().y)))
+                print(pyautogui.pixel(*point))
                 while keyboard.is_pressed("control"):
                     pass
             except IndexError:
