@@ -1,8 +1,8 @@
 import pyautogui, pyscreeze, keyboard
 from time import sleep
 from PIL import Image
-import easyocr
-import cv2 as cv
+# import easyocr
+# import cv2 as cv
 import numpy as np
 
 def click(x, y, duration=0.1):

@@ -48,6 +48,7 @@ if __name__ == "__main__":
     information = []
     bot_messages = []
     chat_messages = []
+    imposter = False
     messages = [{"role": "system", "content": open("prompt_message.txt", "r").read()}]
 
     model = "hf.co/NousResearch/Hermes-3-Llama-3.1-8B-GGUF:Q8_0"
@@ -72,7 +73,7 @@ if __name__ == "__main__":
     while True:
         #find and join games
         if pyautogui.locateCenterOnScreen('menu/exit_game.png', confidence=.95) != None: #no host
-            sleep(5)
+            sleep(10)
             if pyautogui.locateCenterOnScreen('menu/exit_game.png', confidence=.95) != None:
                 pyautogui.moveTo(pyautogui.locateCenterOnScreen('menu/exit_game.png', confidence=.95))
                 sleep(0.05)
@@ -96,9 +97,19 @@ if __name__ == "__main__":
         if pyautogui.locateCenterOnScreen('menu/find_game.png', confidence=.8) != None:
             pyautogui.moveTo(pyautogui.locateCenterOnScreen('menu/find_game.png', confidence=.8))
             sleep(0.05)
+            pyautogui.click()
+        
+        if pyautogui.locateCenterOnScreen('other/crewmate.png', confidence=.9) != None:
             bot_messages = []
             chat_messages = []
-            pyautogui.click()
+            imposter = False
+            print("CREWMATE")
+
+        if pyautogui.locateCenterOnScreen('other/imposter.png', confidence=.9) != None:
+            bot_messages = []
+            chat_messages = []
+            imposter = True
+            print("IMPOSTER")
         
         if pyautogui.locateCenterOnScreen('menu/find_game1.png', confidence=.8) != None:
             for lobby in [
@@ -109,8 +120,8 @@ if __name__ == "__main__":
                 (1725, 1250)
             ]:
                 try:
-                    pyautogui.screenshot('temp_lobby.png', region=(*lobby, 275, 50))
-                    result = reader.readtext("temp_lobby.png")
+                    pyautogui.screenshot('temp/temp_lobby.png', region=(*lobby, 275, 50))
+                    result = reader.readtext("temp/temp_lobby.png")
                     result = "".join([text for (bbox, text, prob) in result])
                     result = int(result[:result.find("/")].strip())
                     print("lobby players:", result)
@@ -128,19 +139,25 @@ if __name__ == "__main__":
             pyautogui.moveTo(*NEUTRAL)
 
         #press play again button
-        if pyautogui.locateCenterOnScreen('other/again.png', confidence=.8) != None:
-            pyautogui.moveTo(pyautogui.locateCenterOnScreen('other/again.png', confidence=.8))
+        if pyautogui.locateCenterOnScreen('menu/again.png', confidence=.8) != None:
+            pyautogui.moveTo(pyautogui.locateCenterOnScreen('menu/again.png', confidence=.8))
             sleep(0.05)
             pyautogui.click()
             sleep(0.05)
-            bot_messages = []
-            chat_messages = []
             pyautogui.moveTo(*NEUTRAL)
 
         #press continue button
-        if pyautogui.locateCenterOnScreen('other/continue.png', confidence=.8) != None:
-            pyautogui.moveTo(pyautogui.locateCenterOnScreen('other/continue.png', confidence=.8))
+        if pyautogui.locateCenterOnScreen('menu/continue.png', confidence=.8) != None:
+            pyautogui.moveTo(pyautogui.locateCenterOnScreen('menu/continue.png', confidence=.8))
             sleep(0.05)
+            if pyautogui.locateCenterOnScreen('menu/victory.png', confidence=.8) != None:
+                with open("stats.txt", "a") as myfile:
+                    myfile.write("w")
+
+            if pyautogui.locateCenterOnScreen('menu/defeat.png', confidence=.8) != None:
+                with open("stats.txt", "a") as myfile:
+                    myfile.write("l")
+            
             pyautogui.click()  
             sleep(0.05)
             pyautogui.moveTo(*NEUTRAL)
@@ -148,8 +165,8 @@ if __name__ == "__main__":
         in_lobby = (pyautogui.locateCenterOnScreen('other/lobby.png', confidence=.8) != None)
         if in_lobby:
             try:
-                pyautogui.screenshot('temp_lobby.png', region=(2310, 680, 200, 55))
-                result = reader.readtext("temp_lobby.png")
+                pyautogui.screenshot('temp/temp_lobby.png', region=(2310, 680, 200, 55))
+                result = reader.readtext("temp/temp_lobby.png")
                 result = "".join([text for (bbox, text, prob) in result])
                 result = int(result[:result.find("/")].strip())
                 print("players:", result)
@@ -198,7 +215,7 @@ if __name__ == "__main__":
                 if moving == True:
                     #wandering around
                     while pyautogui.locateCenterOnScreen('other/chat.png', confidence=.8) == None and pyautogui.locateCenterOnScreen('other/map.png', confidence=.8) != None and not chat_open:
-                        pyautogui.press('q')
+                        
                         if pyautogui.locateCenterOnScreen('other/emergency.png', confidence=.9) == None:
                             r = random.randint(1,4)
                             pyautogui.press('e')
@@ -226,26 +243,28 @@ if __name__ == "__main__":
                                 pyautogui.keyUp('left')
                                 pyautogui.keyUp('right')
                                 pyautogui.keyDown('left')
+                                if imposter:
+                                    pyautogui.press('q')
+                                else:
+                                    pyautogui.press('r')
                             case 2:
                                 pyautogui.keyUp('left')
                                 pyautogui.keyUp('right')
                                 pyautogui.keyDown('right')
-                        # if pyautogui.locateCenterOnScreen('other/emergency.png', confidence=.9) == None:
-                        #     pyautogui.press('e')
-                        #     r = random.randint(1,2)
-                        #     match r:
+                                if imposter:
+                                    pyautogui.press('q')
+                                else:
+                                    pyautogui.press('r')
                             case 3:
                                 pyautogui.keyUp('up')
                                 pyautogui.keyUp('down')
                                 pyautogui.keyDown('down')
-                                pyautogui.press('r')
                             case 4:
                                 pyautogui.keyUp('up')
                                 pyautogui.keyUp('down')
                                 pyautogui.keyDown('up')
-                                pyautogui.press('r')
                         #tasks
-                        if random.randint(1,20) == 1:
+                        if random.randint(1,5) == 1:
                             if pyautogui.locateCenterOnScreen('other/emergency_button.png', confidence=.9) != None: #emergency button
                                 print("no emergency button")
                                 pyautogui.press('escape')
@@ -482,8 +501,8 @@ if __name__ == "__main__":
                 messages = [{"role": "system", "content": open("prompt_message.txt", "r").read()}]
                 # im = pyscreeze.screenshot(region=(500, 150, 1250, 845))
                 # im.save("temp.png")
-                pyautogui.screenshot('temp.png', region=(636, 63, 1102, 986))
-                img = np.array(Image.open('temp.png'))
+                pyautogui.screenshot('temp/temp.png', region=(636, 63, 1102, 986))
+                img = np.array(Image.open('temp/temp.png'))
                 # Set range of color values
                 lower = np.array([50, 50, 50])
                 upper = np.array([255, 255, 255])
@@ -491,8 +510,8 @@ if __name__ == "__main__":
                 mask = cv.inRange(img, lower, upper)
                 # Set the new value to the masked image
                 img[mask.astype(bool)] = 255
-                Image.fromarray(img).save("temp.png")
-                result = reader.readtext("temp.png")
+                Image.fromarray(img).save("temp/temp.png")
+                result = reader.readtext("temp/temp.png")
                 # messages = pytesseract.image_to_string('temp.png')
                 messages.append({"role": "system", "content": "information gathered in the round will be provided in the next message."})
                 messages.append({"role": "system", "content": "\n".join(information)})
@@ -531,8 +550,8 @@ if __name__ == "__main__":
                     voting_phase = (pyautogui.locateCenterOnScreen('other/begin.png') == None)
                     if voting_phase:
                         try:
-                            pyautogui.screenshot('temp_time.png', region=(2194, 1333, 139, 45))
-                            result = reader.readtext("temp_time.png")
+                            pyautogui.screenshot('temp/temp_time.png', region=(2194, 1333, 139, 45))
+                            result = reader.readtext("temp/temp_time.png")
                             result = float("".join([text for (bbox, text, prob) in result]).replace("s","").replace(":","").strip())
                             if result > 32:
                                 sleep(1)
