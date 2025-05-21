@@ -50,6 +50,7 @@ if __name__ == "__main__":
     chat_messages = []
     imposter = False
     messages = [{"role": "system", "content": open("prompt_message.txt", "r").read()}]
+    up, left, down, right = "w", "a", "s", "d"
 
     model = "hf.co/NousResearch/Hermes-3-Llama-3.1-8B-GGUF:Q8_0"
 
@@ -150,14 +151,21 @@ if __name__ == "__main__":
         if pyautogui.locateCenterOnScreen('menu/continue.png', confidence=.8) != None:
             pyautogui.moveTo(pyautogui.locateCenterOnScreen('menu/continue.png', confidence=.8))
             sleep(0.05)
-            if pyautogui.locateCenterOnScreen('menu/victory.png', confidence=.8) != None:
-                with open("stats.txt", "a") as myfile:
-                    myfile.write("w")
+            with open("stats.txt", "r") as file:
+                text = file.readlines()[0]
+                
+                if pyautogui.locateCenterOnScreen('menu/victory.png', confidence=.8) != None:
+                    text += "w"
 
-            if pyautogui.locateCenterOnScreen('menu/defeat.png', confidence=.8) != None:
-                with open("stats.txt", "a") as myfile:
-                    myfile.write("l")
-            
+                if pyautogui.locateCenterOnScreen('menu/defeat.png', confidence=.8) != None:
+                    text += "l"
+                    
+                wr = text.count("w")*100 / len(text)
+                print(wr)
+                print(text.count("w"), text.count("l")+text.count("w"))
+
+            with open("stats.txt", "w") as file:
+                file.write(text+"\n"+str(round(wr, 1))+"%")
             pyautogui.click()  
             sleep(0.05)
             pyautogui.moveTo(*NEUTRAL)
@@ -191,21 +199,21 @@ if __name__ == "__main__":
                 
                 match r:
                     case 1:
-                        pyautogui.keyDown('left')
+                        pyautogui.keyDown(left)
                         sleep(random.random()*random.random())
-                        pyautogui.keyUp('left')
+                        pyautogui.keyUp(left)
                     case 2:
-                        pyautogui.keyDown('right')
+                        pyautogui.keyDown(right)
                         sleep(random.random()*random.random())
-                        pyautogui.keyUp('right')
+                        pyautogui.keyUp(right)
                     case 3:
-                        pyautogui.keyDown('up')
+                        pyautogui.keyDown(up)
                         sleep(random.random()*random.random())
-                        pyautogui.keyUp('up')
+                        pyautogui.keyUp(up)
                     case 4:
-                        pyautogui.keyDown('down')
+                        pyautogui.keyDown(down)
                         sleep(random.random()*random.random())
-                        pyautogui.keyUp('down')
+                        pyautogui.keyUp(down)
             
         else:
             chat_open = (pyautogui.locateCenterOnScreen('other/report.png', confidence=.9) != None)
@@ -219,50 +227,51 @@ if __name__ == "__main__":
                         if pyautogui.locateCenterOnScreen('other/emergency.png', confidence=.9) == None:
                             r = random.randint(1,4)
                             pyautogui.press('e')
+                            match r:
+                                case 1:
+                                    # pyautogui.keyUp('left')
+                                    pyautogui.keyUp(right)
+                                    pyautogui.keyDown(left)
+                                    if imposter:
+                                        pyautogui.press('q')
+                                    else:
+                                        pyautogui.press('r')
+                                case 2:
+                                    # pyautogui.keyUp('left')
+                                    pyautogui.keyUp(right)
+                                    pyautogui.keyDown(right)
+                                    if imposter:
+                                        pyautogui.press('q')
+                                    else:
+                                        pyautogui.press('r')
+                                case 3:
+                                    # pyautogui.keyUp('up')
+                                    pyautogui.keyUp(down)
+                                    pyautogui.keyDown(down)
+                                case 4:
+                                    # pyautogui.keyUp('up')
+                                    pyautogui.keyUp(down)
+                                    pyautogui.keyDown(up)
                         else:
                             r = random.randint(1,3)
                             match r:
                                 case 1:
-                                    pyautogui.keyUp('left')
-                                    pyautogui.keyUp('right')
-                                    pyautogui.keyDown('left')
+                                    pyautogui.keyUp(left)
+                                    pyautogui.keyUp(right)
+                                    pyautogui.keyDown(left)
                                     sleep(3)
                                 case 2:
-                                    pyautogui.keyUp('left')
-                                    pyautogui.keyUp('right')
-                                    pyautogui.keyDown('right')
+                                    pyautogui.keyUp(left)
+                                    pyautogui.keyUp(right)
+                                    pyautogui.keyDown(right)
                                     sleep(3)
                                 case 3:
-                                    pyautogui.keyUp('up')
-                                    pyautogui.keyUp('down')
-                                    pyautogui.keyDown('down')
+                                    pyautogui.keyUp(up)
+                                    pyautogui.keyUp(down)
+                                    pyautogui.keyDown(down)
                                     pyautogui.press('r')
                                     sleep(3)
-                        match r:
-                            case 1:
-                                pyautogui.keyUp('left')
-                                pyautogui.keyUp('right')
-                                pyautogui.keyDown('left')
-                                if imposter:
-                                    pyautogui.press('q')
-                                else:
-                                    pyautogui.press('r')
-                            case 2:
-                                pyautogui.keyUp('left')
-                                pyautogui.keyUp('right')
-                                pyautogui.keyDown('right')
-                                if imposter:
-                                    pyautogui.press('q')
-                                else:
-                                    pyautogui.press('r')
-                            case 3:
-                                pyautogui.keyUp('up')
-                                pyautogui.keyUp('down')
-                                pyautogui.keyDown('down')
-                            case 4:
-                                pyautogui.keyUp('up')
-                                pyautogui.keyUp('down')
-                                pyautogui.keyDown('up')
+                        
                         #tasks
                         if random.randint(1,5) == 1:
                             if pyautogui.locateCenterOnScreen('other/emergency_button.png', confidence=.9) != None: #emergency button

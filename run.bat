@@ -1,2 +1,2 @@
-.venv/scripts/activate
-python amogus.py
+.venv\Scripts\python.exe amogus.py
+pause

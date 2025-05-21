@@ -31,10 +31,23 @@ def do_task():
     pass
 
 if __name__ == "__main__":
+    pyscreeze.USE_IMAGE_NOT_FOUND_EXCEPTION = False
+    # with open("stats.txt", "r+") as file:
+    #     text = file.readlines()[0]
+        
+    #     if pyautogui.locateCenterOnScreen('menu/victory.png', confidence=.8) != None:
+    #         text += "w"
+    #     if pyautogui.locateCenterOnScreen('menu/defeat.png', confidence=.8) != None:
+    #         text += "l"
+            
+    #     wr = text.count("w") / len(text)
+    #     print(wr)
+    #     print(text.count("w"), len(text))
+    #     file.write(text+"\n"+str(round(wr))+"%")
 
     screen_height, screen_width = 2560, 1600
 
-    pyscreeze.USE_IMAGE_NOT_FOUND_EXCEPTION = False
+    
 
     # pyautogui.screenshot('report.png', region=(2003, 757, 129, 80))
     # pyautogui.screenshot('lobby.png', region=(2405, 104, 45, 53))
@@ -57,7 +70,6 @@ if __name__ == "__main__":
     # # Set the new value to the masked image
     # img[mask.astype(bool)] = 255
     # Image.fromarray(img).save("temp.png")
-
     print("started")
     while True:
 
