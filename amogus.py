@@ -53,6 +53,7 @@ if __name__ == "__main__":
     up, left, down, right = "w", "a", "s", "d"
 
     model = "hf.co/NousResearch/Hermes-3-Llama-3.1-8B-GGUF:Q8_0"
+    # model = "hf.co/mlabonne/Meta-Llama-3.1-8B-Instruct-abliterated-GGUF:Q8_0"
 
     subprocess.Popen(["ollama", "serve"])
     subprocess.Popen(["ollama", "pull", model])
@@ -237,16 +238,16 @@ if __name__ == "__main__":
                                     else:
                                         pyautogui.press('r')
                                 case 2:
-                                    # pyautogui.keyUp('left')
-                                    pyautogui.keyUp(right)
+                                    pyautogui.keyUp('left')
+                                    # pyautogui.keyUp(right)
                                     pyautogui.keyDown(right)
                                     if imposter:
                                         pyautogui.press('q')
                                     else:
                                         pyautogui.press('r')
                                 case 3:
-                                    # pyautogui.keyUp('up')
-                                    pyautogui.keyUp(down)
+                                    pyautogui.keyUp('up')
+                                    # pyautogui.keyUp(down)
                                     pyautogui.keyDown(down)
                                 case 4:
                                     # pyautogui.keyUp('up')
@@ -552,6 +553,8 @@ if __name__ == "__main__":
                 bot_messages.append(response)
                 pyautogui.press('backspace')
                 print(response)
+                with open("log.txt", "a") as file:
+                    file.write(response)
                 pyautogui.press('backspace')
                 pyautogui.write(response, interval=0.05)
                 pyautogui.press('enter')
@@ -566,6 +569,19 @@ if __name__ == "__main__":
                                 sleep(1)
                             else:
                                 try:
+                                    pyautogui.screenshot('temp/temp.png', region=(636, 63, 1102, 986))
+                                    img = np.array(Image.open('temp/temp.png'))
+                                    # Set range of color values
+                                    lower = np.array([50, 50, 50])
+                                    upper = np.array([255, 255, 255])
+                                    # Threshold the image to get only selected colors
+                                    mask = cv.inRange(img, lower, upper)
+                                    # Set the new value to the masked image
+                                    img[mask.astype(bool)] = 255
+                                    Image.fromarray(img).save("temp/temp.png")
+                                    result = reader.readtext("temp/temp.png")
+                                    for (bbox, text, prob) in result:
+                                        chat_messages.append(text)
                                     pyautogui.moveTo(2040, 1343)
                                     sleep(0.1)
                                     pyautogui.click()
@@ -576,7 +592,7 @@ if __name__ == "__main__":
                                         if len(bot_messages) > 0:
                                             messages.append({"role": "system", "content": "here is what you have said so far, NOT including other messages/responses to yours."})
                                             messages.append({"role": "system", "content": "\n".join(bot_messages)})
-                                        if len(messages) > 0:
+                                        if len(chat_messages) > 0:
                                             messages.append({"role": "system", "content": "here is an approximation of what has been said in chat for the previous rounds, with usernames preceding the message. Messages saying someone has voted are not sent by anyone but the game."})
                                             messages.append({"role": "system", "content": "\n".join(chat_messages)})
                                         messages.append({"role": "system", "content": "here are the colors you can choose from:"})
