@@ -1,4 +1,4 @@
-import pyautogui, pyscreeze, keyboard
+import pyautogui
 from time import sleep
 from PIL import Image
 import cv2 as cv
@@ -7,32 +7,6 @@ import easyocr
 import ollama
 import subprocess
 import random
-# import pytesseract
-
-# def click(x, y, duration=0.1):
-#     pyautogui.click(
-#         x,
-#         y,
-#         duration=duration
-#     )
-
-
-# def getColor(x, y):
-#     im = pyscreeze.screenshot()
-#     return im.getpixel((x,y))
-
-
-# def checkColor(x, y, color):
-#     return tolerance(color, getColor(x, y))
-
-
-# def tolerance(color, scolor, tolerance=15):
-#     r, g, b = color[:3]
-#     exR, exG, exB = scolor
-#     return (abs(r - exR) <= tolerance) and (abs(g - exG) <= tolerance) and (abs(b - exB) <= tolerance)
-
-# def do_task():
-#     pass
 
 if __name__ == "__main__":
     """
@@ -70,7 +44,7 @@ if __name__ == "__main__":
     up, left, down, right = "w", "a", "s", "d"
 
     model = "hf.co/NousResearch/Hermes-3-Llama-3.1-8B-GGUF:Q8_0"
-    # model = "hf.co/mlabonne/Meta-Llama-3.1-8B-Instruct-abliterated-GGUF:Q8_0"
+    model = "hf.co/mlabonne/Meta-Llama-3.1-8B-Instruct-abliterated-GGUF:Q8_0"
 
     game_state = None
     colors = ["Red", "Blue", "Green", "Pink", "Orange", "Yellow", "Black", "White", "Purple", "Brown", "Cyan", "Lime", "Maroon", "Rose", "Banana", "Gray", "Tan", "Coral", "skip"]
@@ -293,10 +267,18 @@ if __name__ == "__main__":
                                     pyautogui.keyUp(up)
                                     # pyautogui.keyUp(down)
                                     pyautogui.keyDown(down)
+                                    if imposter:
+                                        pyautogui.press('q')
+                                    else:
+                                        pyautogui.press('r')
                                 case 4:
                                     # pyautogui.keyUp('up')
                                     pyautogui.keyUp(down)
                                     pyautogui.keyDown(up)
+                                    if imposter:
+                                        pyautogui.press('q')
+                                    else:
+                                        pyautogui.press('r')
                         else:
                             r = random.randint(1,3)
                             match r:
@@ -304,18 +286,20 @@ if __name__ == "__main__":
                                     pyautogui.keyUp(left)
                                     pyautogui.keyUp(right)
                                     pyautogui.keyDown(left)
-                                    sleep(3)
+                                    pyautogui.press('r')
+                                    sleep(2)
                                 case 2:
                                     pyautogui.keyUp(left)
                                     pyautogui.keyUp(right)
                                     pyautogui.keyDown(right)
-                                    sleep(3)
+                                    pyautogui.press('r')
+                                    sleep(2)
                                 case 3:
                                     pyautogui.keyUp(up)
                                     pyautogui.keyUp(down)
                                     pyautogui.keyDown(down)
                                     pyautogui.press('r')
-                                    sleep(3)
+                                    sleep(2)
                         
                         #tasks
                         if random.randint(1,5) == 1:
@@ -649,15 +633,19 @@ if __name__ == "__main__":
                 messages.append({"role": "system", "content": "information gathered in the round will be provided in the next message."})
                 messages.append({"role": "system", "content": "\n".join(information)})
 
-                messages.append({"role": "system", "content": "examples will be provided in the next message, where [CREW] is a crewmate (referred to by color)."})
+                messages.append({"role": "system", "content": "examples will be provided in the next message, where [CREW] is a crewmate (referred to by color) and should be replaced."})
                 messages.append({"role": "system", "content": "\n".join(open("chat_examples.txt", "r").readlines())})
                 
                 messages.append({"role": "system", "content": "an approximation of chat will be provided in the next few messages, with names preceding the message. messages saying someone has voted are not sent by anyone but the game."})
                 for (bbox, text, prob) in result:
                     # print(text)
                     # if not any(i == text for i in chat_messages):
-                    messages.append({"role": "user", "content": text})
+                    # messages.append({"role": "user", "content": text})
                     chat_messages.append(text)
+                
+                if len(chat_messages) > 0:
+                    for message in chat_messages:
+                        messages.append({"role": "user", "content": message})
 
                 if len(bot_messages) > 0:
                     messages.append({"role": "system", "content": "here is what you have said so far, NOT including other messages/responses to yours. remember to consider chat messages from other people."})
