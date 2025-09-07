@@ -7,6 +7,8 @@ import easyocr
 import ollama
 import subprocess
 import random
+import pyscreeze
+import re
 
 if __name__ == "__main__":
     """
@@ -33,7 +35,7 @@ if __name__ == "__main__":
 
     screen_height, screen_width = 2560, 1600
 
-    # pyscreeze.USE_IMAGE_NOT_FOUND_EXCEPTION = False
+    pyscreeze.USE_IMAGE_NOT_FOUND_EXCEPTION = False
     pyautogui.FAILSAFE = False
 
     information = []
@@ -45,6 +47,7 @@ if __name__ == "__main__":
 
     model = "hf.co/NousResearch/Hermes-3-Llama-3.1-8B-GGUF:Q8_0"
     model = "hf.co/mlabonne/Meta-Llama-3.1-8B-Instruct-abliterated-GGUF:Q8_0"
+    model = "hf.co/NousResearch/Hermes-3-Llama-3.1-8B-GGUF:Q8_0"
 
     game_state = None
     colors = ["Red", "Blue", "Green", "Pink", "Orange", "Yellow", "Black", "White", "Purple", "Brown", "Cyan", "Lime", "Maroon", "Rose", "Banana", "Gray", "Tan", "Coral", "skip"]
@@ -143,7 +146,7 @@ if __name__ == "__main__":
             pyautogui.moveTo(1300, 1500) #refresh
             sleep(0.05)
             pyautogui.click()
-            sleep(0.05)
+            sleep(0.1)
             pyautogui.moveTo(*NEUTRAL)
 
         """
@@ -658,7 +661,10 @@ if __name__ == "__main__":
                     options={
                         "temperature": 0.9
                     },
-                )['message']['content'].lower().replace("waddleking","").replace("suspicious","sus").replace(".","").replace("!","").replace(":","").replace("'","").strip()
+                )['message']['content']
+                print(response)
+                response = response.lower().replace("waddleking","").replace("suspicious","sus").replace(".","").replace("!","").replace(":","").replace("'","").strip()
+                response = re.sub("[\(\[].*?[\)\]]", "", response)
                 if response.count("\n") > 0:
                     response = response[:response.find("\n")]
                 bot_messages.append(response)
