@@ -9,6 +9,7 @@ import subprocess
 import random
 import pyscreeze
 import re
+import time
 
 if __name__ == "__main__":
     """
@@ -48,6 +49,7 @@ if __name__ == "__main__":
     model = "hf.co/NousResearch/Hermes-3-Llama-3.1-8B-GGUF:Q8_0"
     model = "hf.co/mlabonne/Meta-Llama-3.1-8B-Instruct-abliterated-GGUF:Q8_0"
     model = "hf.co/NousResearch/Hermes-3-Llama-3.1-8B-GGUF:Q8_0"
+    # model = "hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_0"
 
     game_state = None
     colors = ["Red", "Blue", "Green", "Pink", "Orange", "Yellow", "Black", "White", "Purple", "Brown", "Cyan", "Lime", "Maroon", "Rose", "Banana", "Gray", "Tan", "Coral", "skip"]
@@ -94,7 +96,7 @@ if __name__ == "__main__":
 
         if pyautogui.locateCenterOnScreen('menu/okay.png', confidence=.95) != None:
             pyautogui.moveTo(pyautogui.locateCenterOnScreen('menu/okay.png', confidence=.95))
-            sleep(0.05)
+            sleep(0.1)
             pyautogui.click()
 
         if pyautogui.locateCenterOnScreen('menu/find_game.png', confidence=.8) != None:
@@ -244,7 +246,7 @@ if __name__ == "__main__":
                     it will move in all four directions IF the emergency button is not sighted
                     otherwise it will only move in three directions as that means it is in the spawn area
                     """
-                    while pyautogui.locateCenterOnScreen('other/chat.png', confidence=.8) == None and pyautogui.locateCenterOnScreen('other/map.png', confidence=.8) != None and not chat_open:
+                    while pyautogui.locateCenterOnScreen('other/chat.png', confidence=.9) == None and pyautogui.locateCenterOnScreen('other/map.png', confidence=.9) != None and not chat_open:
                         
                         if pyautogui.locateCenterOnScreen('other/emergency.png', confidence=.9) == None:
                             r = random.randint(1,4)
@@ -305,7 +307,7 @@ if __name__ == "__main__":
                                     sleep(2)
                         
                         #tasks
-                        if random.randint(1,5) == 1:
+                        if random.randint(1,1) == 1:
                             if pyautogui.locateCenterOnScreen('other/emergency_button.png', confidence=.9) != None: #emergency button
                                 print("no emergency button")
                                 pyautogui.press('escape')
@@ -617,6 +619,7 @@ if __name__ == "__main__":
                 then, it is generated, with some adjustments such as removing punctuation to make it seem more 'human'
                 we then log the message sent and then type it out, and send it in chat
                 """
+                s=time.time()
                 #chatting
                 messages = [{"role": "system", "content": open("prompt_message.txt", "r").read()}]
                 # im = pyscreeze.screenshot(region=(500, 150, 1250, 845))
@@ -633,13 +636,13 @@ if __name__ == "__main__":
                 Image.fromarray(img).save("temp/temp.png")
                 result = reader.readtext("temp/temp.png")
                 # messages = pytesseract.image_to_string('temp.png')
-                messages.append({"role": "system", "content": "information gathered in the round will be provided in the next message."})
-                messages.append({"role": "system", "content": "\n".join(information)})
+                # messages.append({"role": "system", "content": "information gathered in the round will be provided in the next message."})
+                # messages.append({"role": "system", "content": "\n".join(information)})
 
-                messages.append({"role": "system", "content": "examples will be provided in the next message, where [CREW] is a crewmate (referred to by color) and should be replaced."})
-                messages.append({"role": "system", "content": "\n".join(open("chat_examples.txt", "r").readlines())})
+                # messages.append({"role": "system", "content": "examples will be provided in the next message, where [CREW] is a crewmate (referred to by color) and should be replaced."})
+                # messages.append({"role": "system", "content": "\n".join(open("chat_examples.txt", "r").readlines())})
                 
-                messages.append({"role": "system", "content": "an approximation of chat will be provided in the next few messages, with names preceding the message. messages saying someone has voted are not sent by anyone but the game."})
+                messages.append({"role": "system", "content": "The chat will be provided in the next few messages, with names preceding the message. Messages saying someone has voted are not sent by anyone but the game."})
                 for (bbox, text, prob) in result:
                     # print(text)
                     # if not any(i == text for i in chat_messages):
@@ -650,10 +653,11 @@ if __name__ == "__main__":
                     for message in chat_messages:
                         messages.append({"role": "user", "content": message})
 
-                if len(bot_messages) > 0:
-                    messages.append({"role": "system", "content": "here is what you have said so far, NOT including other messages/responses to yours. remember to consider chat messages from other people."})
-                    for text in bot_messages:
-                        messages.append({"role": "assistant", "content": text})
+                # if len(bot_messages) > 0:
+                #     messages.append({"role": "system", "content": "Here is what you have said so far, NOT including other messages/responses to yours. Remember to consider chat messages from other people."})
+                #     for text in bot_messages:
+                #         messages.append({"role": "assistant", "content": text})
+                messages.append({"role": "system", "content": "Please generate the response now."})
                 pyautogui.press('a')
                 response = ollama.chat(
                     model=model,  # Replace with the name of your loaded model
@@ -675,6 +679,8 @@ if __name__ == "__main__":
                 pyautogui.press('backspace')
                 pyautogui.write(response, interval=0.05)
                 pyautogui.press('enter')
+                e=time.time()
+                print(e-s)
                 for i in range(random.randint(5,15)):
                     voting_phase = (pyautogui.locateCenterOnScreen('other/begin.png') == None)
                     if voting_phase:
