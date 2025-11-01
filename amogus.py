@@ -50,6 +50,7 @@ if __name__ == "__main__":
     model = "hf.co/mlabonne/Meta-Llama-3.1-8B-Instruct-abliterated-GGUF:Q8_0"
     model = "hf.co/NousResearch/Hermes-3-Llama-3.1-8B-GGUF:Q8_0"
     # model = "hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_0"
+    model = "hf.co/mlabonne/Meta-Llama-3.1-8B-Instruct-abliterated-GGUF:Q8_0"
 
     game_state = None
     colors = ["Red", "Blue", "Green", "Pink", "Orange", "Yellow", "Black", "White", "Purple", "Brown", "Cyan", "Lime", "Maroon", "Rose", "Banana", "Gray", "Tan", "Coral", "skip"]
